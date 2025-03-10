@@ -72,6 +72,9 @@ The application consists of the following models and their relationships:
   - `country`: STRING
   - `contact`: STRING
 
+- **Relationships**
+  - `An author can write multiple books, and a book can have multiple authors (Many-to-Many relationship).`
+
 - **Books**
   - `ISBN`: STRING
   - `title`: STRING
@@ -81,16 +84,31 @@ The application consists of the following models and their relationships:
   - `publisher_id`: FK
   - `kindle_id`: FK
 
+  **Relationships**
+  - `A book can have multiple authors (Many-to-Many relationship).`
+  - `A book is published by one publisher (Books.publisher_id references Publishers.publisher_id).`
+  - `A book can have multiple Kindles and a Kindle can have multiple books (Many-to-Many relationship).`
+  - `A book can have multiple bookmarks and highlighted quotes (Bookmarks.book_id and HighlightedQuotes.book_id reference Books.ISBN).`
+  - `A book can be downloaded by multiple Kindles (Downloads.book_id references Books.ISBN).`
+  - `Reading progress is tracked for each book on different Kindles (ReadingProgress.book_id references Books.ISBN).`
+
 - **Publishers**
   - `publisher_id`: STRING
   - `name`: STRING
   - `country`: STRING
+  
+- **Relationships**
+  - `A publisher can publish multiple books (Books.publisher_id references Publishers.publisher_id).`
 
 - **Bookmarks**
   - `bookmark_id`: STRING
   - `page`: ARRAY
   - `book_id`: FK
   - `kindle_id`: FK
+
+- **Relationships**
+  - `A bookmark belongs to one book (Bookmarks.book_id references Books.ISBN).`
+  - `A bookmark is associated with one Kindle (Bookmarks.kindle_id references Kindles.kindle_id).`
 
 - **Kindles**
   - `kindle_id`: STRING
@@ -99,12 +117,22 @@ The application consists of the following models and their relationships:
   - `email`: STRING
   - `book_id`: FK
 
+- **Relationships**
+  - `A Kindle can have multiple books (Books.kindle_id references Kindles.kindle_id).`
+  - `A Kindle can have multiple bookmarks and highlighted quotes (Bookmarks.kindle_id and HighlightedQuotes.kindle_id reference Kindles.kindle_id).`
+  - `A Kindle can download multiple books (Downloads.kindle_id references Kindles.kindle_id).`
+  - `Reading progress is tracked for multiple books on a Kindle (ReadingProgress.kindle_id references Kindles.kindle_id).`
+
 - **HighlightedQuotes**
   - `quote_id`: STRING
   - `quote_text`: STRING
   - `page`: ARRAY
   - `book_id`: FK
   - `kindle_id`: FK
+  
+- **Relationships**
+  - `A highlighted quote belongs to one book (HighlightedQuotes.book_id references Books.ISBN).`
+  - `A highlighted quote is associated with one Kindle (HighlightedQuotes.kindle_id references Kindles.kindle_id).`
 
 - **Downloads**
   - `download_id`: STRING
@@ -112,6 +140,10 @@ The application consists of the following models and their relationships:
   - `download_size`: STRING
   - `book_id`: FK
   - `kindle_id`: FK
+  
+- **Relationships**
+  - `A download is associated with one book (Downloads.book_id references Books.ISBN).`
+  - `A download is associated with one Kindle (Downloads.kindle_id references Kindles.kindle_id).`
 
 - **ReadingProgress**
   - `progress_id`: STRING
@@ -121,6 +153,10 @@ The application consists of the following models and their relationships:
   - `is_finished`: BOOLEAN
   - `book_id`: FK
   - `kindle_id`: FK
+  
+- **Relationships**
+  - `Reading progress is tracked for one book (ReadingProgress.book_id references Books.ISBN).`
+  - `Reading progress is tracked on one Kindle (ReadingProgress.kindle_id references Kindles.kindle_id).`
 
 ## Contributing
 
