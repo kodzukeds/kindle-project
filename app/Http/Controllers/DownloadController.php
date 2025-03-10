@@ -2,63 +2,70 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Download;
+use App\Models\Book;
+use App\Models\Kindle;
 use Illuminate\Http\Request;
 
 class DownloadController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        //
+        $downloads = Download::all();
+        return view('downloads.index', compact('downloads'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
-        //
+        $books = Book::all();
+        $kindles = Kindle::all();
+        return view('downloads.create', compact('books', 'kindles'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'book_id' => 'required|exists:books,ISBN',
+            'kindle_id' => 'required|exists:kindles,id',
+            'download_date' => 'required|date',
+            'download_size' => 'required|numeric',
+        ]);
+
+        Download::create($request->all());
+
+        return redirect()->route('downloads.index');
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
+    public function show(Download $download)
     {
-        //
+        return view('downloads.show', compact('download'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
+    public function edit(Download $download)
     {
-        //
+        $books = Book::all();
+        $kindles = Kindle::all();
+        return view('downloads.edit', compact('download', 'books', 'kindles'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
+    public function update(Request $request, Download $download)
     {
-        //
+        $request->validate([
+            'book_id' => 'required|exists:books,ISBN',
+            'kindle_id' => 'required|exists:kindles,id',
+            'download_date' => 'required|date',
+            'download_size' => 'required|numeric',
+        ]);
+
+        $download->update($request->all());
+
+        return redirect()->route('downloads.index');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
+    public function destroy(Download $download)
     {
-        //
+        $download->delete();
+        return redirect()->route('downloads.index');
     }
 }
+

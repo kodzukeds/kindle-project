@@ -2,63 +2,74 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Kindle;
+use App\Models\Book;
+use App\Models\Author;
 use Illuminate\Http\Request;
 
 class KindleController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        //
+        $kindles = Kindle::all();
+        return view('kindles.index', compact('kindles'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
-        //
+        return view('kindles.create');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'name' => 'required|string|max:100',
+            'type' => 'required|string|max:100',
+            'email' => 'required|email|max:100',
+        ]);
+
+        Kindle::create($request->all());
+
+        return redirect()->route('kindles.index');
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
+    public function show(Kindle $kindle)
     {
-        //
+        return view('kindles.show', compact('kindle'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
+    public function edit(Kindle $kindle)
     {
-        //
+        return view('kindles.edit', compact('kindle'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
+    public function update(Request $request, Kindle $kindle)
     {
-        //
+        $request->validate([
+            'name' => 'required|string|max:100',
+            'type' => 'required|string|max:100',
+            'email' => 'required|email|max:100',
+        ]);
+
+        $kindle->update($request->all());
+        return redirect()->route('kindles.index');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
+    public function destroy(Kindle $kindle)
     {
-        //
+        $kindle->delete();
+        return redirect()->route('kindles.index');
+    }
+
+    public function attachBook(Kindle $kindle, Book $book)
+    {
+        $kindle->books()->attach($book);
+        return redirect()->route('kindles.show', $kindle);
+    }
+
+    public function detachBook(Kindle $kindle, Book $book)
+    {
+        $kindle->books()->detach($book);
+        return redirect()->route('kindles.show', $kindle);
     }
 }

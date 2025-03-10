@@ -2,63 +2,77 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Author;
+use App\Models\Book;
 use Illuminate\Http\Request;
 
 class AuthorController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
-    {
-        //
-    }
+  public function index()
+  {
+    $authors = Author::all();
+    return view('authors.index', compact('authors'));
+  }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
+  public function create()
+  {
+    return view('authors.create');
+  }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
+  public function store(Request $request)
+  {
+    $request->validate([
+      'name' => 'required|string|max:100',
+      'birthday' => 'required|date',
+      'country' => 'nullable|string|max:50',
+      'contact' => 'nullable|string|max:100',
+    ]);
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
+    Author::create($request->all());
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
+    return redirect()->route('authors.index');
+  }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
+  public function show(Author $author)
+  {
+    return view('authors.show', compact('author'));
+  }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
-    }
+  public function edit(Author $author)
+  {
+    return view('authors.edit', compact('author'));
+  }
+
+  public function update(Request $request, Author $author)
+  {
+    $request->validate([
+      'name' => 'required|string|max:100',
+      'birthday' => 'required|date',
+      'country' => 'nullable|string|max:50',
+      'contact' => 'nullable|string|max:100',
+    ]);
+
+    $author->update($request->all());
+    return redirect()->route('authors.index');
+  }
+
+  public function destroy(Author $author)
+  {
+    $author->delete();
+    return redirect()->route('authors.index');
+  }
+
+  public function attachBook(Author $author, Book $book)
+  {
+    $author->books()->attach($book);
+
+    return redirect()->route('authors.show', $author);
+  }
+
+  public function detachBook(Author $author, Book $book)
+  {
+    $author->books()->detach($book);
+
+    return redirect()->route('authors.show', $author);
+  }
 }
