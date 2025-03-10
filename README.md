@@ -158,6 +158,151 @@ The application consists of the following models and their relationships:
   - `Reading progress is tracked for one book (ReadingProgress.book_id references Books.ISBN).`
   - `Reading progress is tracked on one Kindle (ReadingProgress.kindle_id references Kindles.kindle_id).`
 
+## Routes
+The application includes the following routes:
+
+### General Routes
+
+`GET /: Displays the welcome page.`
+
+`GET /dashboard: Displays the dashboard (requires authentication and verification).`
+
+### Profile Management
+`GET /profile: Edit the authenticated user's profile (ProfileController@edit).`
+
+`PATCH /profile: Update the authenticated user's profile (ProfileController@update).`
+
+`DELETE /profile: Delete the authenticated user's profile (ProfileController@destroy).`
+
+
+### Resource Routes
+**Authors (AuthorController):**
+
+`GET /authors: List all authors.`
+
+`POST /authors: Create a new author.`
+
+`GET /authors/{author}: Display a single author. `
+
+`GET /authors/{author}/edit: Edit an author.`
+
+`PATCH /authors/{author}: Update an author.`
+
+`DELETE /authors/{author}: Delete an author.`
+
+ **Books (BookController):**
+
+`GET /books: List all books.`
+
+`POST /books: Create a new book.`
+
+`GET /books/{book}: Display a single book.`
+
+`GET /books/{book}/edit: Edit a book.`
+
+`PATCH /books/{book}: Update a book.`
+
+`DELETE /books/{book}: Delete a book.`
+
+**Bookmarks (BookmarkController):**
+
+`GET /bookmarks: List all bookmarks.`
+
+`POST /bookmarks: Create a new bookmark.`
+
+`GET /bookmarks/{bookmark}: Display a single bookmark.`
+
+`GET /bookmarks/{bookmark}/edit: Edit a bookmark.`
+
+`PATCH /bookmarks/{bookmark}: Update a bookmark.`
+
+`DELETE /bookmarks/{bookmark}: Delete a bookmark.`
+
+**Downloads (DownloadController):**
+
+`GET /downloads: List all downloads.`
+
+`POST /downloads: Create a new download.`
+
+`GET /downloads/{download}: Display a single download.`
+
+`GET /downloads/{download}/edit: Edit a download.`
+
+`PATCH /downloads/{download}: Update a download.`
+
+`DELETE /downloads/{download}: Delete a download.`
+
+**Highlighted Quotes (HighlightedQuoteController):**
+
+`GET /highlightedQuotes: List all highlighted quotes.`
+
+`POST /highlightedQuotes: Create a new highlighted quote.`
+
+`GET /highlightedQuotes/{highlightedQuote}: Display a single highlighted quote.`
+
+`GET /highlightedQuotes/{highlightedQuote}/edit: Edit a highlighted quote.`
+
+`PATCH /highlightedQuotes/{highlightedQuote}: Update a highlighted quote.`
+
+`DELETE /highlightedQuotes/{highlightedQuote}: Delete a highlighted quote.`
+
+**Kindles (KindleController):**
+
+`GET /kindles: List all Kindle devices.`
+
+`POST /kindles: Create a new Kindle device.`
+
+`GET /kindles/{kindle}: Display a single Kindle.`
+
+`GET /kindles/{kindle}/edit: Edit a Kindle.`
+
+`PATCH /kindles/{kindle}: Update a Kindle.`
+
+`DELETE /kindles/{kindle}: Delete a Kindle.`
+
+**Publishers (PublisherController):**
+
+`GET /publishers: List all publishers.`
+
+`POST /publishers: Create a new publisher.`
+
+`GET /publishers/{publisher}: Display a single publisher.`
+
+`GET /publishers/{publisher}/edit: Edit a publisher.`
+
+`PATCH /publishers/{publisher}: Update a publisher.`
+
+`DELETE /publishers/{publisher}: Delete a publisher.`
+
+**Reading Progress (ReadingProgressController):**
+
+`GET /reading_progress: List all reading progress records.`
+
+`POST /reading_progress: Create a new reading progress record.`
+
+`GET /reading_progress/{readingProgress}: Display a single reading progress record.`
+
+`GET /reading_progress/{readingProgress}/edit: Edit a reading progress record.`
+
+`PATCH /reading_progress/{readingProgress}: Update a reading progress record.`
+
+`DELETE /reading_progress/{readingProgress}: Delete a reading progress record.`
+
+### Relationship Management
+**Attach/Detach Relationships:**
+
+`POST /books/{book}/kindles/{kindle}/attach: Attach a Kindle to a book (BookController@attachKindle).`
+
+`POST /books/{book}/kindles/{kindle}/detach: Detach a Kindle from a book (BookController@detachKindle).`
+
+`POST /books/{book}/authors/{author}/attach: Attach an author to a book (BookController@attachAuthor).`
+
+`POST /books/{book}/authors/{author}/detach: Detach an author from a book (BookController@detachAuthor).`
+
+`POST /kindles/{kindle}/books/{book}/attach: Attach a book to a Kindle (KindleController@attachBook).`
+
+`POST /kindles/{kindle}/books/{book}/detach: Detach a book from a Kindle (KindleController@detachBook).`
+
 ## Contributing
 
 Contributions are welcome! Please fork the repository and submit a pull request.
