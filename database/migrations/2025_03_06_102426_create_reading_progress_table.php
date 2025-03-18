@@ -8,7 +8,7 @@ return new class extends Migration
 {
   public function up()
   {
-    Schema::create('reading_progresses', function (Blueprint $table) {
+    Schema::create('reading_progress', function (Blueprint $table) {
       $table->id();
       $table->integer('last_read_page')->nullable();
       $table->float('book_percentage')->nullable();
@@ -23,6 +23,6 @@ return new class extends Migration
 
   public function down()
   {
-    Schema::dropIfExists('reading_progresses');
+    Schema::dropIfExists('reading_progress');
   }
 };

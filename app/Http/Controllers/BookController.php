@@ -112,4 +112,5 @@ class BookController extends Controller
         $book->authors()->detach($author);
         return redirect()->route('books.show', $book);
     }
+
 }
