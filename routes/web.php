@@ -15,10 +15,6 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
-
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
@@ -37,8 +33,6 @@ Route::middleware('auth')->group(function () {
     Route::post('/books/{book}/authors/{author}/detach', [BookController::class, 'detachAuthor'])->name('books.detachAuthor');
     Route::post('/kindles/{kindle}/books/{book}/attach', [KindleController::class, 'attachBook'])->name('kindles.attachBook');
     Route::post('/kindles/{kindle}/books/{book}/detach', [KindleController::class, 'detachBook'])->name('kindles.detachBook');
-
-
 });
 
 require __DIR__.'/auth.php';

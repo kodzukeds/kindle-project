@@ -12,7 +12,7 @@ class KindleController extends Controller
     public function index()
     {
         $kindles = Kindle::all();
-        return view('kindles.index', compact('kindles'));
+        return view('kindles', compact('kindles'));
     }
 
     public function create()
