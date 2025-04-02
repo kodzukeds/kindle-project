@@ -28,7 +28,7 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
-        return redirect()->intended(route('kindles', absolute: false));
+        return redirect()->intended(route('kindles.index', absolute: false));
     }
 
     /**

@@ -15,7 +15,8 @@ class Kindle extends Model
 
   public function books(): BelongsToMany
   {
-    return $this->belongsToMany(Book::class);
+    return $this->belongsToMany(Book::class, 'book_kindle', 'kindle_id', 'book_id')
+                ->withTimestamps();
   }
 
   public function bookmarks(): HasMany

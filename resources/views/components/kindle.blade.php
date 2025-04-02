@@ -1,6 +1,6 @@
 @props(['kindle'])
 
-<div class="relative bg-transparent overflow-hidden transform transition-all duration-300 hover:scale-105">
+<div class="relative bg-transparent overflow-hidden">
     <!-- Kindle Device Frame -->
     <div class="relative w-64 h-96 mx-auto">
         <!-- Device Border -->
@@ -29,17 +29,20 @@
                     </div>
                 </div>
                 
-                <!-- Edit & Delete Button -->
+                <!-- Buttons -->
                 <div class="mt-4 text-center">
-                    <div class="flex justify-center space-x-2">
-                        <a href="{{ route('kindles.edit', $kindle) }}" class="px-4 py-2 bg-blue-600 text-white text-sm rounded-lg hover:bg-blue-700 transition-colors">
-                            Edit Kindle
+                    <div class="grid grid-cols-3 gap-2">
+                        <a href="{{ route('kindles.books', $kindle) }}" class="px-3 py-2 bg-gray-600 text-white text-xs rounded-lg hover:bg-gray-700 transition-colors">
+                            Read
+                        </a>
+                        <a href="{{ route('kindles.edit', $kindle) }}" class="px-3 py-2 bg-blue-600 text-white text-xs rounded-lg hover:bg-blue-700 transition-colors">
+                            Edit
                         </a>
                         
-                        <form action="{{ route('kindles.destroy', $kindle) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this Kindle?');">
+                        <form action="{{ route('kindles.destroy', $kindle) }}" method="POST" class="inline" onsubmit="return confirm('Are you sure you want to delete this Kindle?');">
                             @csrf
                             @method('DELETE')
-                            <button type="submit" class="px-4 py-2 bg-red-600 text-white text-sm rounded-lg hover:bg-red-700 transition-colors">
+                            <button type="submit" class="w-full px-3 py-2 bg-red-600 text-white text-xs rounded-lg hover:bg-red-700 transition-colors">
                                 Delete
                             </button>
                         </form>

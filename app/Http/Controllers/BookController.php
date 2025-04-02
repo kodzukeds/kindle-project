@@ -10,107 +10,130 @@ use Illuminate\Http\Request;
 
 class BookController extends Controller
 {
-    public function index()
-    {
-        $books = Book::all();
-        return view('books.index', compact('books'));
+  public function index()
+  {
+    $books = Book::all();
+    $kindles = Kindle::all();
+    return view('books.index', compact('books', 'kindles'));
+  }
+
+
+  public function create()
+  {
+    $authors = Author::all();
+    $publishers = Publisher::all();
+    $kindles = Kindle::all();
+
+    return view('books.create', compact('authors', 'publishers', 'kindles'));
+  }
+
+  public function store(Request $request)
+  {
+
+    $request->validate([
+      'isbn' => 'required|string|max:50|unique:books,ISBN',
+      'title' => 'required|string|max:100',
+      'genre' => 'nullable|string|max:50',
+      'publication_date' => 'required|date',
+      'publisher_id' => 'nullable|exists:publishers,id',
+    ]);
+
+    $book = Book::create([
+      'ISBN' => $request->isbn,
+      'title' => $request->title,
+      'genre' => $request->genre,
+      'publication_date' => $request->publication_date,
+      'publisher_id' => $request->publisher_id,
+    ]);
+
+    if ($request->has('authors')) {
+      $book->authors()->attach($request->authors);
     }
 
-    public function create()
-    {
-        $authors = Author::all();
-        $publishers = Publisher::all();
-        $kindles = Kindle::all();
-
-        return view('books.create', compact('authors', 'publishers', 'kindles'));
+    if ($request->has('kindles')) {
+      $book->kindles()->attach($request->kindles);
     }
 
-    public function store(Request $request)
-    {
-        $request->validate([
-            'title' => 'required|string|max:100',
-            'genre' => 'nullable|string|max:50',
-            'publication_date' => 'required|date',
-            'publisher_id' => 'nullable|exists:publishers,id',
-        ]);
+    return redirect()->route('books.index');
+  }
 
-        $book = Book::create($request->only('title', 'genre', 'publication_date', 'publisher_id'));
+  public function show(Book $book)
+  {
+    return view('books.show', compact('book'));
+  }
 
-        if ($request->has('authors')) {
-            $book->authors()->attach($request->authors);
-        }
+  public function edit(Book $book)
+  {
+    $authors = Author::all();
+    $publishers = Publisher::all();
+    $kindles = Kindle::all();
 
-        if ($request->has('kindles')) {
-            $book->kindles()->attach($request->kindles);
-        }
+    return view('books.edit', compact('book', 'authors', 'publishers', 'kindles'));
+  }
 
-        return redirect()->route('books.index');
+  public function update(Request $request, Book $book)
+  {
+    $request->validate([
+      'title' => 'required|string|max:100',
+      'genre' => 'nullable|string|max:50',
+      'publication_date' => 'required|date',
+      'publisher_id' => 'nullable|exists:publishers,id',
+    ]);
+
+    $book->update($request->only('title', 'genre', 'publication_date', 'publisher_id'));
+
+    if ($request->has('authors')) {
+      $book->authors()->sync($request->authors);
     }
 
-    public function show(Book $book)
-    {
-        return view('books.show', compact('book'));
+    if ($request->has('kindles')) {
+      $book->kindles()->sync($request->kindles);
     }
 
-    public function edit(Book $book)
-    {
-        $authors = Author::all();
-        $publishers = Publisher::all();
-        $kindles = Kindle::all();
+    return redirect()->route('books.index');
+  }
 
-        return view('books.edit', compact('book', 'authors', 'publishers', 'kindles'));
-    }
+  public function destroy(Book $book)
+  {
+    $book->delete();
+    return redirect()->route('books.index');
+  }
 
-    public function update(Request $request, Book $book)
-    {
-        $request->validate([
-            'title' => 'required|string|max:100',
-            'genre' => 'nullable|string|max:50',
-            'publication_date' => 'required|date',
-            'publisher_id' => 'nullable|exists:publishers,id',
-        ]);
+  public function download(Book $book)
+  {
+    $kindles = Kindle::all();
+    return view('books.download', compact('book', 'kindles'));
+  }
 
-        $book->update($request->only('title', 'genre', 'publication_date', 'publisher_id'));
+  public function read(Book $book)
+  {
+    return view('books.read', compact('book'));
+  }
 
-        if ($request->has('authors')) {
-            $book->authors()->sync($request->authors);
-        }
+  public function attachKindle(Request $request, Book $book)
+  {
+    $validated = $request->validate([
+      'kindle_id' => 'required|exists:kindles,id',
+    ]);
+    $book->kindles()->attach($validated['kindle_id']);
+    return redirect()->route('books.index', $book)->with('success', 'Kindle attached to book.');
+  }
 
-        if ($request->has('kindles')) {
-            $book->kindles()->sync($request->kindles);
-        }
+  public function detachKindle(Book $book, Kindle $kindle)
+  {
+    $book->kindles()->detach($kindle);
+    return redirect()->route('books.index', $book);
+  }
 
-        return redirect()->route('books.index');
-    }
+  public function attachAuthor(Book $book, Author $author)
+  {
+    $book->authors()->attach($author);
+    return redirect()->route('books.index', $book);
+  }
 
-    public function destroy(Book $book)
-    {
-        $book->delete();
-        return redirect()->route('books.index');
-    }
-
-    public function attachKindle(Book $book, Kindle $kindle)
-    {
-        $book->kindles()->attach($kindle);
-        return redirect()->route('books.show', $book);
-    }
-
-    public function detachKindle(Book $book, Kindle $kindle)
-    {
-        $book->kindles()->detach($kindle);
-        return redirect()->route('books.show', $book);
-    }
-
-    public function attachAuthor(Book $book, Author $author)
-    {
-        $book->authors()->attach($author);
-        return redirect()->route('books.show', $book);
-    }
-
-    public function detachAuthor(Book $book, Author $author)
-    {
-        $book->authors()->detach($author);
-        return redirect()->route('books.show', $book);
-    }
-
+  public function detachAuthor(Book $book, Author $author)
+  {
+    $book->authors()->detach($author);
+    return redirect()->route('books.index', $book);
+  }
 }

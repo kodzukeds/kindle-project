@@ -16,7 +16,7 @@ class Book extends Model
   protected $primaryKey = 'ISBN';
   public $incrementing = false;
   protected $keyType = 'string';
-  protected $fillable = ['title', 'genre', 'publication_date'];
+  protected $fillable = ['ISBN', 'title', 'genre', 'publication_date', 'publisher_id'];
 
   public function book(): HasOne
   {
@@ -40,7 +40,7 @@ class Book extends Model
 
   public function authors(): BelongsToMany
   {
-    return $this->belongsToMany(Author::class);
+    return $this->belongsToMany(Author::class, 'author_book', 'book_id', 'author_id');
   }
 
   public function publisher(): BelongsTo
@@ -50,6 +50,6 @@ class Book extends Model
 
   public function kindles(): BelongsToMany
   {
-    return $this->belongsToMany(Kindle::class);
+    return $this->belongsToMany(Kindle::class, 'book_kindle', 'book_id', 'kindle_id');
   }
 }
