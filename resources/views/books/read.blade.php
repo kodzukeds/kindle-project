@@ -6,6 +6,11 @@
     <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
       <div class="p-6">
         <h2 class="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-6">Read Book</h2>
+
+        <div class="pdf-viewer">
+          <embed src="{{ asset('storage/' . $book->pdf_path) }}" width="100%" height="600px" type="application/pdf">
+        </div>
+
       </div>
     </div>
   </div>

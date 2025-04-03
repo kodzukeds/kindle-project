@@ -7,6 +7,7 @@ use App\Models\Author;
 use App\Models\Kindle;
 use App\Models\Publisher;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class BookController extends Controller
 {
@@ -29,13 +30,13 @@ class BookController extends Controller
 
   public function store(Request $request)
   {
-
     $request->validate([
       'isbn' => 'required|string|max:50|unique:books,ISBN',
       'title' => 'required|string|max:100',
       'genre' => 'nullable|string|max:50',
       'publication_date' => 'required|date',
       'publisher_id' => 'nullable|exists:publishers,id',
+      'pdf' => 'required|file|mimes:pdf|max:10240',
     ]);
 
     $book = Book::create([
@@ -54,7 +55,24 @@ class BookController extends Controller
       $book->kindles()->attach($request->kindles);
     }
 
-    return redirect()->route('books.index');
+    if ($request->hasFile('pdf')) {
+      $path = $request->file('pdf')->store('pdfs', 'public');
+      $book->pdf_path = $path;
+      $book->save();
+    }
+
+    return redirect()->route('books.index')->with('success', 'Book created successfully!');
+  }
+
+  public function downloadFile($bookId)
+  {
+    $book = Book::findOrFail($bookId);
+
+    if (Storage::exists('public/' . $book->pdf_path)) {
+      return Storage::download('public/' . $book->pdf_path);
+    }
+
+    return back()->with('error', 'File not found');
   }
 
   public function show(Book $book)
